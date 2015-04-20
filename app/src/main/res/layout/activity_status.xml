@@ -1,0 +1,33 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.largerlife.learndroid.myyamba.StatusActivity"
+    android:background="@color/bg_app">
+
+    <TextView
+        android:text="@string/title_activity_status"
+        android:id="@+id/tv_status_title"
+        style="@style/tv_caption" />
+
+    <Button
+        android:text="@string/update_btn_post"
+        android:id="@+id/btn_status_post"
+        android:onClick="onClick"
+        android:layout_below="@+id/tv_status_title"
+        style="@style/btn_app" />
+
+    <EditText
+        android:inputType="textMultiLine"
+        android:id="@+id/et_status"
+        android:hint="@string/update_et_hint"
+        style="@style/edittext"
+        android:enabled="true"
+        android:layout_below="@+id/btn_status_post"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+</RelativeLayout>

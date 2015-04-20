@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">MyYamba</string>
+    <string name="title_activity_status">Status Update</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="update_et_hint">What\'s on your mind?</string>
+    <string name="update_btn_post">Post</string>
 </resources>

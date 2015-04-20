@@ -5,4 +5,33 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="tv_caption">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:padding">@dimen/abc_control_padding_material</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/tv_caption</item>
+    </style>
+
+    <style name="edittext">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:padding">@dimen/abc_control_padding_material</item>
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:gravity">top</item>
+        <item name="android:background">@color/bg_et</item>
+        <item name="android:textColorHint">@color/et_hint</item>
+    </style>
+
+    <style name="btn_app">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/abc_button_padding_vertical_material</item>
+        <item name="android:layout_marginBottom">@dimen/abc_button_padding_vertical_material</item>
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:background">@color/bg_btn</item>
+    </style>
 </resources>

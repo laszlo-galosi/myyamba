@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_app">#ff3e7e92</color>
+    <color name="bg_et">#acfff5c6</color>
+    <color name="tv_caption">#caffffff</color>
+    <color name="et_hint">#ff7c8896</color>
+    <color name="bg_btn">#fffff5c6</color>
+</resources>
