@@ -3,8 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.largerlife.learndroid.myyamba.StatusActivity">
     <item
-        android:id="@+id/action_settings"
-        android:title="@string/action_settings"
+        android:id="@+id/menu_authorize"
+        android:icon="@drawable/twitt_auth2"
+        android:orderInCategory="200"
+        android:title="@string/authorize_twitter"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_get_status"
+        android:icon="@drawable/last_post"
         android:orderInCategory="100"
-        app:showAsAction="never" />
+        android:title="@string/get_status"
+        app:showAsAction="always" />
 </menu>

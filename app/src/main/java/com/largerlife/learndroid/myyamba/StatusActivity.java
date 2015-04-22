@@ -3,42 +3,57 @@ package com.largerlife.learndroid.myyamba;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import oauth.signpost.OAuth;
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.OAuthProvider;
+import oauth.signpost.basic.DefaultOAuthProvider;
+import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+import oauth.signpost.exception.OAuthCommunicationException;
+import oauth.signpost.exception.OAuthExpectationFailedException;
+import oauth.signpost.exception.OAuthMessageSignerException;
+import oauth.signpost.exception.OAuthNotAuthorizedException;
 import winterwell.jtwitter.OAuthSignpostClient;
 import winterwell.jtwitter.Twitter;
+import winterwell.jtwitter.TwitterException;
 
 
-public class StatusActivity extends ActionBarActivity implements View.OnClickListener {
+public class StatusActivity extends ActionBarActivity {
 
     static final String TAG = "StatusActivity";
     private static final String OAUTH_KEY = "iYQ6Wv46bTlBgrofZ8HLli4LI";
     private static final String OAUTH_SECRET = "OwuKvmoUThpBrkI3BKkZuD13jZND7yuJM1vqtH9BziQK4w3YHf";
-    private static final String OAUTH_CALLBACK_SCHEME = "x-largerlife   -oauth-twitter";
+    private static final String OAUTH_CALLBACK_SCHEME = "x-largerlife-oauth-twitter";
     private static final String OAUTH_CALLBACK_URL = OAUTH_CALLBACK_SCHEME + "://callback";
     private static final String TWITTER_USER = "laszlo_galosi";
-
+    SharedPreferences prefs;
     private OAuthSignpostClient oauthClient;
     private OAuthConsumer mConsumer;
     private OAuthProvider mProvider;
     private Twitter twitter;
-    SharedPreferences prefs;
     private EditText etStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_status);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setIcon(R.drawable.yamba);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
 
-/*        mConsumer = new CommonsHttpOAuthConsumer(OAUTH_KEY, OAUTH_SECRET);
+        mConsumer = new CommonsHttpOAuthConsumer(OAUTH_KEY, OAUTH_SECRET);
         mProvider = new DefaultOAuthProvider(
                 "https://api.twitter.com/oauth/request_token",
                 "https://api.twitter.com/oauth/access_token",
@@ -48,22 +63,41 @@ public class StatusActivity extends ActionBarActivity implements View.OnClickLis
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String token = prefs.getString("token", null);
         String tokenSecret = prefs.getString("tokenSecret", null);
+        Log.d(TAG, "Checking prefs for auth token");
         if (token != null && tokenSecret != null) {
             // We have token, use it
             mConsumer.setTokenWithSecret(token, tokenSecret);
             // Make a Twitter object
             oauthClient = new OAuthSignpostClient(OAUTH_KEY, OAUTH_SECRET, token,
                     tokenSecret);
+            Log.d(TAG, "Found token.");
             twitter = new Twitter(TWITTER_USER, oauthClient);
-        }*/
+        }
+
         etStatus = (EditText) findViewById(R.id.et_status);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_status, menu);
+        // Inflate the menu items for use in the action bar
+        Log.d(TAG, "Menu Inflate.");
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_status, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d("MENU", "" + item.getTitle());
+        int i = item.getItemId();
+        if (i == R.id.menu_authorize) {
+            onClickAuthorize(getCurrentFocus());
+        } else if (i == R.id.menu_get_status) {
+            onClickGetStatus(getCurrentFocus());
+        } else {
+            Log.d(TAG, "Invalid menu action");
+        }
         return true;
     }
 
@@ -86,16 +120,31 @@ public class StatusActivity extends ActionBarActivity implements View.OnClickLis
 
     }
 
-    @Override
-    public void onClick(View v) {
-        String statusText = etStatus.getText().toString();
-        Twitter twitter = new Twitter(
-                Log.d(TAG, "onClick with text:" + statusText);
+    public void onClickAuthorize(View view) {
+        new OAuthAuthorizeTask().execute();
+    }
+
+    public void onClickTweet(View v) {
+        if (twitter == null) {
+            Toast.makeText(this, "Authenticate first", Toast.LENGTH_LONG).show();
+            return;
+        }
+        EditText status = (EditText) findViewById(R.id.et_status);
+        new PostStatusTask().execute(status.getText().toString());
+        Log.d(TAG, "onClick with text:" + status);
+    }
+
+    public void onClickGetStatus(View view) {
+        if (twitter == null) {
+            Toast.makeText(this, "Authenticate first", Toast.LENGTH_LONG).show();
+            return;
+        }
+        new GetStatusTask().execute();
     }
 
 
     /* Responsible for starting the Twitter authorization */
-   /* class OAuthAuthorizeTask extends AsyncTask<Void, Void, String> {
+    class OAuthAuthorizeTask extends AsyncTask<Void, Void, String> {
 
         @Override
         protected String doInBackground(Void... params) {
@@ -117,12 +166,6 @@ public class StatusActivity extends ActionBarActivity implements View.OnClickLis
             } catch (OAuthCommunicationException e) {
                 message = "OAuthCommunicationException";
                 e.printStackTrace();
-            } catch (OAuthCommunicationException e) {
-                e.printStackTrace();
-            } catch (OAuthExpectationFailedException e) {
-                e.printStackTrace();
-            } catch (OAuthNotAuthorizedException e) {
-                e.printStackTrace();
             }
             return message;
         }
@@ -131,12 +174,12 @@ public class StatusActivity extends ActionBarActivity implements View.OnClickLis
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             if (result != null) {
-                Toast.makeText(MainActivity.this, result, Toast.LENGTH_LONG).show();
+                Toast.makeText(StatusActivity.this, result, Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    *//* Responsible for retrieving access tokens from twitter *//*
+    /* Responsible for retrieving access tokens from twitter */
     class RetrieveAccessTokenTask extends AsyncTask<String, Void, String> {
 
         @Override
@@ -162,7 +205,7 @@ public class StatusActivity extends ActionBarActivity implements View.OnClickLis
                 // Make a Twitter object
                 oauthClient = new OAuthSignpostClient(OAUTH_KEY, OAUTH_SECRET, token,
                         tokenSecret);
-                twitter = new Twitter("MarkoGargenta", oauthClient);
+                twitter = new Twitter(TWITTER_USER, oauthClient);
 
                 Log.d(TAG, "token: " + token);
             } catch (OAuthMessageSignerException e) {
@@ -185,8 +228,42 @@ public class StatusActivity extends ActionBarActivity implements View.OnClickLis
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             if (result != null) {
-                Toast.makeText(MainActivity.this, result, Toast.LENGTH_LONG).show();
+                Toast.makeText(StatusActivity.this, result, Toast.LENGTH_LONG).show();
             }
         }
-    }*/
+    }
+
+    /* Responsible for getting Twitter status */
+    class GetStatusTask extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... params) {
+            return twitter.getStatus().text;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Toast.makeText(StatusActivity.this, result, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    /* Responsible for posting new status to Twitter */
+    class PostStatusTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                twitter.setStatus(params[0]);
+                return "Successfully posted: " + params[0];
+            } catch (TwitterException e) {
+                return "Error connecting to server.";
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Toast.makeText(StatusActivity.this, result, Toast.LENGTH_LONG).show();
+        }
+
+    }
 }

@@ -2,27 +2,30 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.largerlife.learndroid.myyamba">
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/yamba"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
+            android:launchMode="singleInstance"
             android:name=".StatusActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
-<!--                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+            <!-- Used for OAuth callback -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="myyamba"
                 <data
-                    android:scheme="x-largerlife   -oauth-twitter"
-                    android:host="callback" />-->
+                    android:scheme="x-largerlife-oauth-twitter"
+                    android:host="callback" />
             </intent-filter>
         </activity>
     </application>
