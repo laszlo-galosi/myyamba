@@ -1,11 +1,9 @@
 package com.largerlife.learndroid.myyamba;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -16,16 +14,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.largerlife.learndroid.myyamba.apitype.APIType;
+import com.largerlife.learndroid.myyamba.apitype.OAuthAuthorizeTask;
+import com.largerlife.learndroid.myyamba.apitype.RetrieveAccessTokenTask;
+
 import oauth.signpost.OAuth;
-import oauth.signpost.OAuthConsumer;
-import oauth.signpost.OAuthProvider;
-import oauth.signpost.basic.DefaultOAuthProvider;
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import oauth.signpost.exception.OAuthCommunicationException;
-import oauth.signpost.exception.OAuthExpectationFailedException;
-import oauth.signpost.exception.OAuthMessageSignerException;
-import oauth.signpost.exception.OAuthNotAuthorizedException;
-import winterwell.jtwitter.OAuthSignpostClient;
 import winterwell.jtwitter.Twitter;
 import winterwell.jtwitter.TwitterException;
 
@@ -33,16 +26,6 @@ import winterwell.jtwitter.TwitterException;
 public class StatusActivity extends ActionBarActivity {
 
     static final String TAG = "StatusActivity";
-    private static final String OAUTH_KEY = "iYQ6Wv46bTlBgrofZ8HLli4LI";
-    private static final String OAUTH_SECRET = "OwuKvmoUThpBrkI3BKkZuD13jZND7yuJM1vqtH9BziQK4w3YHf";
-    private static final String OAUTH_CALLBACK_SCHEME = "x-largerlife-oauth-twitter";
-    private static final String OAUTH_CALLBACK_URL = OAUTH_CALLBACK_SCHEME + "://callback";
-    private static final String TWITTER_USER = "laszlo_galosi";
-    SharedPreferences prefs;
-    private OAuthSignpostClient oauthClient;
-    private OAuthConsumer mConsumer;
-    private OAuthProvider mProvider;
-    private Twitter twitter;
     private EditText etStatus;
 
     @Override
@@ -52,28 +35,6 @@ public class StatusActivity extends ActionBarActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setIcon(R.drawable.yamba);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-
-        mConsumer = new CommonsHttpOAuthConsumer(OAUTH_KEY, OAUTH_SECRET);
-        mProvider = new DefaultOAuthProvider(
-                "https://api.twitter.com/oauth/request_token",
-                "https://api.twitter.com/oauth/access_token",
-                "https://api.twitter.com/oauth/authorize");
-
-        // Read the prefs to see if we have token
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String token = prefs.getString("token", null);
-        String tokenSecret = prefs.getString("tokenSecret", null);
-        Log.d(TAG, "Checking prefs for auth token");
-        if (token != null && tokenSecret != null) {
-            // We have token, use it
-            mConsumer.setTokenWithSecret(token, tokenSecret);
-            // Make a Twitter object
-            oauthClient = new OAuthSignpostClient(OAUTH_KEY, OAUTH_SECRET, token,
-                    tokenSecret);
-            Log.d(TAG, "Found token.");
-            twitter = new Twitter(TWITTER_USER, oauthClient);
-        }
-
         etStatus = (EditText) findViewById(R.id.et_status);
     }
 
@@ -83,7 +44,7 @@ public class StatusActivity extends ActionBarActivity {
         // Inflate the menu items for use in the action bar
         Log.d(TAG, "Menu Inflate.");
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_status, menu);
+        inflater.inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -91,12 +52,30 @@ public class StatusActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         Log.d("MENU", "" + item.getTitle());
         int i = item.getItemId();
-        if (i == R.id.menu_authorize) {
-            onClickAuthorize(getCurrentFocus());
-        } else if (i == R.id.menu_get_status) {
-            onClickGetStatus(getCurrentFocus());
-        } else {
-            Log.d(TAG, "Invalid menu action");
+        Intent intentUpdater = new Intent(this, UpdaterService.class);
+        Intent intentRefresher = new Intent(this, RefreshService.class);
+        switch (i) {
+            case R.id.menu_authorize:
+                onClickAuthorize(getCurrentFocus());
+                break;
+            case R.id.menu_get_status:
+                onClickGetStatus(getCurrentFocus());
+                break;
+            case R.id.menu_start_service:
+                startService(intentUpdater);
+                break;
+            case R.id.menu_stop_service:
+                stopService(intentUpdater);
+                break;
+            case R.id.menu_refresh:
+                startService(intentRefresher);
+                break;
+            case R.id.menu_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                break;
+            default:
+                Log.d(TAG, "Invalid menu action");
+                return false;
         }
         return true;
     }
@@ -108,23 +87,22 @@ public class StatusActivity extends ActionBarActivity {
         Log.d(TAG, "intent: " + intent);
 
         // Check if this is a callback from OAuth
+        APIType apiType = APIType.TWITTER;
         Uri uri = intent.getData();
-        if (uri != null && uri.getScheme().equals(OAUTH_CALLBACK_SCHEME)) {
+        if (uri != null && uri.getScheme().equals(apiType.getInfo().getCallbackUrl())) {
             Log.d(TAG, "callback: " + uri.getPath());
-
             String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
             Log.d(TAG, "verifier: " + verifier);
-
-            new RetrieveAccessTokenTask().execute(verifier);
+            new RetrieveAccessTokenTask(apiType, this, ((YambaApp) getApplication()).prefs).execute(verifier);
         }
-
     }
 
     public void onClickAuthorize(View view) {
-        new OAuthAuthorizeTask().execute();
+        new OAuthAuthorizeTask(APIType.TWITTER, this).execute();
     }
 
     public void onClickTweet(View v) {
+        Twitter twitter = ((YambaApp) getApplication()).twitter;
         if (twitter == null) {
             Toast.makeText(this, "Authenticate first", Toast.LENGTH_LONG).show();
             return;
@@ -135,6 +113,7 @@ public class StatusActivity extends ActionBarActivity {
     }
 
     public void onClickGetStatus(View view) {
+        Twitter twitter = ((YambaApp) getApplication()).twitter;
         if (twitter == null) {
             Toast.makeText(this, "Authenticate first", Toast.LENGTH_LONG).show();
             return;
@@ -142,102 +121,11 @@ public class StatusActivity extends ActionBarActivity {
         new GetStatusTask().execute();
     }
 
-
-    /* Responsible for starting the Twitter authorization */
-    class OAuthAuthorizeTask extends AsyncTask<Void, Void, String> {
-
-        @Override
-        protected String doInBackground(Void... params) {
-            String authUrl;
-            String message = null;
-            try {
-                authUrl = mProvider.retrieveRequestToken(mConsumer, OAUTH_CALLBACK_URL);
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl));
-                startActivity(intent);
-            } catch (OAuthMessageSignerException e) {
-                message = "OAuthMessageSignerException";
-                e.printStackTrace();
-            } catch (OAuthNotAuthorizedException e) {
-                message = "OAuthNotAuthorizedException";
-                e.printStackTrace();
-            } catch (OAuthExpectationFailedException e) {
-                message = "OAuthExpectationFailedException";
-                e.printStackTrace();
-            } catch (OAuthCommunicationException e) {
-                message = "OAuthCommunicationException";
-                e.printStackTrace();
-            }
-            return message;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            if (result != null) {
-                Toast.makeText(StatusActivity.this, result, Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    /* Responsible for retrieving access tokens from twitter */
-    class RetrieveAccessTokenTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... params) {
-            String message = null;
-            String verifier = params[0];
-            try {
-                // Get the token
-                Log.d(TAG, "mConsumer: " + mConsumer);
-                Log.d(TAG, "mProvider: " + mProvider);
-                mProvider.retrieveAccessToken(mConsumer, verifier);
-                String token = mConsumer.getToken();
-                String tokenSecret = mConsumer.getTokenSecret();
-                mConsumer.setTokenWithSecret(token, tokenSecret);
-
-                Log.d(TAG, String.format("verifier: %s, token: %s, tokenSecret: %s",
-                        verifier, token, tokenSecret));
-
-                // Store token in prefs
-                prefs.edit().putString("token", token).putString("tokenSecret",
-                        tokenSecret).commit();
-
-                // Make a Twitter object
-                oauthClient = new OAuthSignpostClient(OAUTH_KEY, OAUTH_SECRET, token,
-                        tokenSecret);
-                twitter = new Twitter(TWITTER_USER, oauthClient);
-
-                Log.d(TAG, "token: " + token);
-            } catch (OAuthMessageSignerException e) {
-                message = "OAuthMessageSignerException";
-                e.printStackTrace();
-            } catch (OAuthNotAuthorizedException e) {
-                message = "OAuthNotAuthorizedException";
-                e.printStackTrace();
-            } catch (OAuthExpectationFailedException e) {
-                message = "OAuthExpectationFailedException";
-                e.printStackTrace();
-            } catch (OAuthCommunicationException e) {
-                message = "OAuthCommunicationException";
-                e.printStackTrace();
-            }
-            return message;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            if (result != null) {
-                Toast.makeText(StatusActivity.this, result, Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
     /* Responsible for getting Twitter status */
     class GetStatusTask extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... params) {
-            return twitter.getStatus().text;
+            return ((YambaApp) getApplication()).twitter.getStatus().text;
         }
 
         @Override
@@ -252,7 +140,7 @@ public class StatusActivity extends ActionBarActivity {
         @Override
         protected String doInBackground(String... params) {
             try {
-                twitter.setStatus(params[0]);
+                ((YambaApp) getApplication()).twitter.setStatus(params[0]);
                 return "Successfully posted: " + params[0];
             } catch (TwitterException e) {
                 return "Error connecting to server.";
@@ -264,6 +152,5 @@ public class StatusActivity extends ActionBarActivity {
             super.onPostExecute(result);
             Toast.makeText(StatusActivity.this, result, Toast.LENGTH_LONG).show();
         }
-
     }
 }

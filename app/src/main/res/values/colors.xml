@@ -2,7 +2,7 @@
 <resources>
     <color name="bg_app">#fff79600</color>
     <color name="bg_et">#acfff5c6</color>
-    <color name="tv_caption">#fffffff</color>
+    <color name="tv_caption">#ffffff</color>
     <color name="et_hint">#ff7c8896</color>
     <color name="bg_btn">#fffff5c6</color>
 </resources>

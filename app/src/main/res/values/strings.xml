@@ -1,10 +1,21 @@
 <resources>
     <string name="app_name">MyYamba</string>
-    <string name="title_activity_status">Status Update</string>
+    <string name="title_activity_status">Update Status</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="update_et_hint">What\'s on your mind?</string>
-    <string name="update_btn_post">Post</string>
+    <string name="update_btn_post">Update</string>
     <string name="authorize_twitter">Authenticate</string>
     <string name="get_status">Get Status</string>
+    <string name="start_service">Start Service</string>
+    <string name="stop_service">Stop Service</string>
+    <string name="refresh">Refresh</string>
+    <string name="title_activity_prefs">Settings</string>
+    <string name="titleUsername">User name</string>
+    <string name="summaryUsername">Please enter your account user name.</string>
+    <string name="titlePassword">Password</string>
+    <string name="summaryPassword">Please, enter your account password.</string>
+    <string name="titleApiRoot">API Root URL</string>
+    <string name="summaryApiRoot">Please specify the service API Root URL. Blank defaults to Twitter.</string>
+    <string name="twitter_settings">Twitter</string>
 </resources>
