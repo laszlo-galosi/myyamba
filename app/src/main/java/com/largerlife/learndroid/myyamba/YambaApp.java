@@ -25,13 +25,9 @@ public class YambaApp extends Application {
         super.onCreate();
         Log.d(TAG, "onCreate");
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        APIType apiType = APIType.TWITTER;
-        if (readAPIAccessTokenFromPrefs(apiType)) {
-            createAPI(apiType);
-        }
     }
 
-    public void createAPI(APIType apiType) throws UnsupportedOperationException {
+    public void createAPI(final APIType apiType) throws UnsupportedOperationException {
         if (apiType == APIType.TWITTER) {
             String userName = apiType.getUserName(prefs);
             String token = apiType.getAccessToken(prefs);
@@ -58,13 +54,21 @@ public class YambaApp extends Application {
         }
     }
 
+    public Object getAPI(APIType apiType) {
+        if (apiType == APIType.TWITTER) {
+            Log.d(TAG, "Get API " + apiType.name());
+            return twitter;
+        }
+        return null;
+    }
+
     /**
      * Read the settings to see if we have token•
      *
      * @param apiType the {@link com.largerlife.learndroid.myyamba.apitype.APIType}
      * @return true if the authentication token found in the Preferences.
      */
-    private boolean readAPIAccessTokenFromPrefs(APIType apiType) {
+    public boolean readAPIAccessTokenFromPrefs(APIType apiType) {
         Log.d(TAG, "Checking settings for auth " + apiType.getPrefix() + APIType.API_TOKEN);
         String token = apiType.getAccessToken(prefs);
         String tokenSecret = apiType.getAccessTokenSecret(prefs);

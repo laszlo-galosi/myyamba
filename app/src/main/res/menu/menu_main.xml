@@ -9,7 +9,7 @@
         android:title="@string/authorize_twitter"
         app:showAsAction="always" />
     <item
-        android:id="@+id/menu_get_status"
+        android:id="@+id/menu_profile"
         android:icon="@drawable/last_post"
         android:orderInCategory="100"
         android:title="@string/get_status"

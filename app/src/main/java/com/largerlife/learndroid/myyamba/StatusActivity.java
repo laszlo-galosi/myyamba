@@ -1,6 +1,7 @@
 package com.largerlife.learndroid.myyamba;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.largerlife.learndroid.myyamba.apitype.APIType;
+import com.largerlife.learndroid.myyamba.apitype.DownloadProfileImageTask;
 import com.largerlife.learndroid.myyamba.apitype.OAuthAuthorizeTask;
 import com.largerlife.learndroid.myyamba.apitype.RetrieveAccessTokenTask;
 
@@ -27,6 +29,8 @@ public class StatusActivity extends ActionBarActivity {
 
     static final String TAG = "StatusActivity";
     private EditText etStatus;
+    private MenuItem menuProfile;
+    private YambaApp app;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +39,12 @@ public class StatusActivity extends ActionBarActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setIcon(R.drawable.yamba);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+
+        app = ((YambaApp) getApplication());
+        APIType apiType = APIType.TWITTER;
+        if (app.readAPIAccessTokenFromPrefs(apiType)) {
+            app.createAPI(apiType);
+        }
         etStatus = (EditText) findViewById(R.id.et_status);
     }
 
@@ -45,6 +55,14 @@ public class StatusActivity extends ActionBarActivity {
         Log.d(TAG, "Menu Inflate.");
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
+        menuProfile = menu.findItem(R.id.menu_profile);
+        new DownloadProfileImageTask(APIType.TWITTER, app) {
+            @Override
+            protected void onPostExecute(Drawable result) {
+                super.onPostExecute(result);
+                setProfileImage(result);
+            }
+        }.execute();
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -58,7 +76,7 @@ public class StatusActivity extends ActionBarActivity {
             case R.id.menu_authorize:
                 onClickAuthorize(getCurrentFocus());
                 break;
-            case R.id.menu_get_status:
+            case R.id.menu_profile:
                 onClickGetStatus(getCurrentFocus());
                 break;
             case R.id.menu_start_service:
@@ -87,19 +105,29 @@ public class StatusActivity extends ActionBarActivity {
         Log.d(TAG, "OnNewIntent: " + intent);
 
         // Check if this is a callback from OAuth
-        APIType apiType = APIType.TWITTER;
+        final APIType apiType = APIType.TWITTER;
         Uri uri = intent.getData();
-        Log.d(TAG, "uri: " + uri.getScheme() + "==" + apiType.getInfo().getCallbackScheme());
         if (uri != null && uri.getScheme().equals(apiType.getInfo().getCallbackScheme())) {
             Log.d(TAG, "callback: " + uri.getPath());
-            String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
+            final String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
             Log.d(TAG, "verifier: " + verifier);
-            new RetrieveAccessTokenTask(apiType, this, ((YambaApp) getApplication()).prefs).execute(verifier);
-        } else {
-            Log.e(TAG, "Authorization callback failed:" + uri);
-            Toast.makeText(this, "Authorization callback failed.", Toast.LENGTH_LONG).show();
+            new RetrieveAccessTokenTask(apiType, this, ((YambaApp) getApplication()).prefs) {
+                @Override
+                protected void onPostExecute(String result) {
+                    super.onPostExecute(result);
+                    if (result != null) {
+                        //Toast.makeText(StatusActivity.this, result, Toast.LENGTH_LONG).show();
+                        new DownloadProfileImageTask(apiType, app) {
+                            @Override
+                            protected void onPostExecute(Drawable result) {
+                                super.onPostExecute(result);
+                                setProfileImage(result);
+                            }
+                        }.execute();
+                    }
+                }
+            }.execute(verifier);
         }
-
     }
 
     public void onClickAuthorize(View view) {
@@ -124,6 +152,16 @@ public class StatusActivity extends ActionBarActivity {
             return;
         }
         new GetStatusTask().execute();
+    }
+
+    private void setProfileImage(Drawable drawable) {
+        if (drawable == null) {
+            Toast.makeText(StatusActivity.this, "Please, authorize Twitter access.", Toast.LENGTH_LONG).show();
+            drawable = getResources().getDrawable(R.drawable.default_profile);
+        } else {
+            Toast.makeText(StatusActivity.this, "Logged in as " + app.twitter.getSelf().getScreenName(), Toast.LENGTH_LONG).show();
+        }
+        menuProfile.setIcon(drawable);
     }
 
     /* Responsible for getting Twitter status */
