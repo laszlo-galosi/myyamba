@@ -84,17 +84,22 @@ public class StatusActivity extends ActionBarActivity {
     @Override
     public void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Log.d(TAG, "intent: " + intent);
+        Log.d(TAG, "OnNewIntent: " + intent);
 
         // Check if this is a callback from OAuth
         APIType apiType = APIType.TWITTER;
         Uri uri = intent.getData();
-        if (uri != null && uri.getScheme().equals(apiType.getInfo().getCallbackUrl())) {
+        Log.d(TAG, "uri: " + uri.getScheme() + "==" + apiType.getInfo().getCallbackScheme());
+        if (uri != null && uri.getScheme().equals(apiType.getInfo().getCallbackScheme())) {
             Log.d(TAG, "callback: " + uri.getPath());
             String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
             Log.d(TAG, "verifier: " + verifier);
             new RetrieveAccessTokenTask(apiType, this, ((YambaApp) getApplication()).prefs).execute(verifier);
+        } else {
+            Log.e(TAG, "Authorization callback failed:" + uri);
+            Toast.makeText(this, "Authorization callback failed.", Toast.LENGTH_LONG).show();
         }
+
     }
 
     public void onClickAuthorize(View view) {

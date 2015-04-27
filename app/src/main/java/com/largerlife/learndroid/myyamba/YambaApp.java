@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.largerlife.learndroid.myyamba.apitype.APIType;
 
@@ -35,7 +36,10 @@ public class YambaApp extends Application {
             String userName = apiType.getUserName(prefs);
             String token = apiType.getAccessToken(prefs);
             String tokenSecret = apiType.getAccessTokenSecret(prefs);
-            Log.d(TAG, apiType.getPrefix() + APIType.API_USERNAME + ":" + userName);
+            Log.d(TAG, String.format("Creating %s API with %s %s and %s %s.",
+                    apiType.name().toLowerCase(),
+                    APIType.API_USERNAME, userName,
+                    APIType.API_TOKEN, token));
             String apiRoot = prefs.getString(apiType.getPrefix() + APIType.API_ROOT_URL, "");
             // We have token, use it
             apiType.getOAuthConsumer().setTokenWithSecret(token, tokenSecret);
@@ -45,7 +49,7 @@ public class YambaApp extends Application {
                     token,
                     tokenSecret);
             twitter = new Twitter(userName, oauthClient);
-            if (!apiRoot.isEmpty()) {
+            if (apiRoot != null && !apiRoot.isEmpty()) {
                 Log.d(TAG, apiType.getPrefix() + APIType.API_ROOT_URL + ":" + apiRoot);
                 twitter.setAPIRootUrl(apiRoot);
             }
@@ -65,9 +69,13 @@ public class YambaApp extends Application {
         String token = apiType.getAccessToken(prefs);
         String tokenSecret = apiType.getAccessTokenSecret(prefs);
         if (token != null && tokenSecret != null) {
-            Log.d(TAG, "Found token.");
+            Log.d(TAG, apiType.name() + " token found.");
             return prefs.contains(apiType.getPrefix() + "username");
         }
+        Toast.makeText(getApplicationContext(), String.format("Please, authorize %s access.",
+                        apiType.name().toLowerCase()),
+                Toast.LENGTH_LONG).show();
+        Log.d(TAG, apiType.name() + " token not found.");
         return false;
     }
 }

@@ -31,6 +31,11 @@ public class RefreshService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Log.d(TAG, ".onHandleIntent");
         Twitter twitter = ((YambaApp) getApplication()).twitter;
+        if (twitter == null) {
+            Log.e(TAG, "Cannot start Updater service No API created");
+//            Toast.makeText(this, "Cannot start updater service", Toast.LENGTH_LONG).show();
+            return;
+        }
         try {
             List<Status> timeline = twitter.getHomeTimeline();
             for (Status status : timeline) {

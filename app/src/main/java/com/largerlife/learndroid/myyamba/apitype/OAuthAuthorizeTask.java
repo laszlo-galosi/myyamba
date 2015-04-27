@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import oauth.signpost.OAuthProvider;
@@ -21,10 +22,12 @@ public class OAuthAuthorizeTask extends AsyncTask<Void, Void, String> {
 
     private final APIType apiType;
     private final Activity activity;
+    private String tag;
 
     public OAuthAuthorizeTask(APIType apiType, Activity activity) {
         this.apiType = apiType;
         this.activity = activity;
+        this.tag = apiType.name() + ".OAuthAuthorizeTask";
     }
 
     @Override
@@ -33,7 +36,9 @@ public class OAuthAuthorizeTask extends AsyncTask<Void, Void, String> {
         String message = null;
         try {
             CommonsHttpOAuthConsumer consumer = apiType.getOAuthConsumer();
+            Log.d(tag, "Consumer:" + consumer);
             OAuthProvider provider = apiType.getOAuthProvider();
+            Log.d(tag, "Provider:" + provider);
             authUrl = provider.retrieveRequestToken(consumer, apiType.getInfo().getCallbackUrl());
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl));
             this.activity.startActivity(intent);

@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -27,6 +28,11 @@ public class UpdaterService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         final Twitter twitter = ((YambaApp) getApplication()).twitter;
+        if (twitter == null) {
+            Log.e(TAG, "Cannot start Updater service No API created");
+            Toast.makeText(this, "Cannot start updater service", Toast.LENGTH_LONG).show();
+            return super.onStartCommand(intent, flags, startId);
+        }
         try {
             new Thread() {
                 public void run() {
