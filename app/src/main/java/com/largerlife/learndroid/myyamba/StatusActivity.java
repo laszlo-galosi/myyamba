@@ -20,12 +20,15 @@ import com.largerlife.learndroid.myyamba.apitype.DownloadProfileImageTask;
 import com.largerlife.learndroid.myyamba.apitype.OAuthAuthorizeTask;
 import com.largerlife.learndroid.myyamba.apitype.RetrieveAccessTokenTask;
 
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
+
 import oauth.signpost.OAuth;
 import winterwell.jtwitter.Twitter;
 import winterwell.jtwitter.TwitterException;
 
 
-public class StatusActivity extends ActionBarActivity {
+class StatusActivity extends ActionBarActivity {//implements PreferenceChangeListener {
 
     static final String TAG = "StatusActivity";
     private EditText etStatus;
@@ -34,6 +37,8 @@ public class StatusActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_status);
         ActionBar actionBar = getSupportActionBar();
@@ -155,6 +160,7 @@ public class StatusActivity extends ActionBarActivity {
     }
 
     private void setProfileImage(Drawable drawable) {
+        Log.d(TAG, "setProfileImage:" + drawable);
         if (drawable == null) {
             Toast.makeText(StatusActivity.this, "Please, authorize Twitter access.", Toast.LENGTH_LONG).show();
             drawable = getResources().getDrawable(R.drawable.default_profile);
@@ -162,6 +168,20 @@ public class StatusActivity extends ActionBarActivity {
             Toast.makeText(StatusActivity.this, "Logged in as " + app.twitter.getSelf().getScreenName(), Toast.LENGTH_LONG).show();
         }
         menuProfile.setIcon(drawable);
+    }
+
+    @Override
+    public void preferenceChange(PreferenceChangeEvent pce) {
+        APIType apiType = APIType.getAPITypeByPreferenceKey(pce.getKey());
+        Log.d(TAG, pce.getKey() + " settings changed.");
+        if (apiType == APIType.TWITTER) {
+            if (pce.getKey().equals(apiType.getPrefix() + APIType.API_USERNAME)) {
+                Log.d(TAG, pce.getKey() + " settings changed, need reauthorize API access");
+                Toast.makeText(StatusActivity.this, "Settings changed. Please, authorize Twitter access.", Toast.LENGTH_LONG).show();
+                ((YambaApp) getApplication()).twitter = null;
+                new OAuthAuthorizeTask(apiType, this).execute();
+            }
+        }
     }
 
     /* Responsible for getting Twitter status */

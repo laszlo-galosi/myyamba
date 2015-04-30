@@ -16,7 +16,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import winterwell.jtwitter.Twitter;
-import winterwell.jtwitter.TwitterException;
 
 /**
  * Responsible for downloading Twitter profile image
@@ -38,13 +37,13 @@ public class DownloadProfileImageTask extends AsyncTask<Void, Void, Drawable> {
     protected Drawable doInBackground(Void... params) {
         Drawable profileImage = null;
         if (apiType == APIType.TWITTER) {
-            Twitter twitter = (Twitter) app.getAPI(apiType);
+            Twitter twitter = (Twitter) app.getOrCreateAPI(apiType);
             try {
                 android.net.Uri profileImageURI = android.net.Uri.parse(twitter.getSelf().getProfileImageUrl().toString());
                 Log.d(tag, "Downloading profile image for:" + twitter.account().toString() + " from url:" + profileImageURI.toString());
                 profileImage = drawableFromURL(profileImageURI.toString());
-            } catch (TwitterException | IOException e) {
-                Log.e(tag, "Cannot retrieve profile image for " + twitter.account().toString(), e);
+            } catch (Exception e) {
+                Log.e(tag, "Cannot retrieve profile image for " + apiType.getUserName(app.getPrefs()), e);
             }
         }
         return profileImage;

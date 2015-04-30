@@ -73,4 +73,12 @@ public enum APIType {
     public String getAPIRootUrl(SharedPreferences prefs) {
         return prefs.getString(getPrefix() + API_ROOT_URL, "");
     }
+
+    public static APIType getAPITypeByPreferenceKey(String prefKey) {
+
+        if (prefKey.startsWith(TWITTER.getPrefix())) {
+            return APIType.TWITTER;
+        }
+        throw new IllegalArgumentException("Unknow api prefix:" + prefKey);
+    }
 }

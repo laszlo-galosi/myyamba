@@ -17,6 +17,11 @@ import winterwell.jtwitter.Twitter;
 public class YambaApp extends Application {
     static final String TAG = "YambaApp";
     Twitter twitter;
+
+    public SharedPreferences getPrefs() {
+        return prefs;
+    }
+
     SharedPreferences prefs;
     private OAuthSignpostClient oauthClient;
 
@@ -54,8 +59,11 @@ public class YambaApp extends Application {
         }
     }
 
-    public Object getAPI(APIType apiType) {
+    public Object getOrCreateAPI(APIType apiType) {
         if (apiType == APIType.TWITTER) {
+            if (twitter == null) {
+
+            }
             Log.d(TAG, "Get API " + apiType.name());
             return twitter;
         }
