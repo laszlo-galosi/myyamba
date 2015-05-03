@@ -28,7 +28,7 @@ import winterwell.jtwitter.Twitter;
 import winterwell.jtwitter.TwitterException;
 
 
-class StatusActivity extends ActionBarActivity {//implements PreferenceChangeListener {
+public class StatusActivity extends ActionBarActivity implements PreferenceChangeListener {
 
     static final String TAG = "StatusActivity";
     private EditText etStatus;
