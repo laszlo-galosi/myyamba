@@ -18,4 +18,10 @@
     <string name="titleApiRoot">API Root URL</string>
     <string name="summaryApiRoot">Please specify the service API Root URL. Blank defaults to Twitter.</string>
     <string name="twitter_settings">Twitter</string>
+    <string name="titleRefreshRate">Timeline refresh interval</string>
+    <string name="summaryRefreshRate">Please, select how often the app should update your timeline</string>
+    <string name="everyMinute">Every minute</string>
+    <string name="everyFiveMinute">Every five minute</string>
+    <string name="halfAnHour">Half an hour</string>
+    <string name="everyHour">Every hour</string>
 </resources>

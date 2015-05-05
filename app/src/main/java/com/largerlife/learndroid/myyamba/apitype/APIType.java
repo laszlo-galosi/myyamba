@@ -17,7 +17,6 @@ public enum APIType {
     public static final String API_TOKEN_SECRET = "tokenSecret";
     public static final String API_USERNAME = "username";
     public static final String API_ROOT_URL = "apiRoot";
-    public static final String CB_SET_PROFILE_IMAGE = "setProfileImage";
     private final String prefix;
 
     private final IAPITypeInfo apiTypeInfo;

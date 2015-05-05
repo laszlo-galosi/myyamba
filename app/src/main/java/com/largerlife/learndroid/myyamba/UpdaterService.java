@@ -6,16 +6,18 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.largerlife.learndroid.myyamba.apitype.APIType;
+
 import java.util.List;
 
 import winterwell.jtwitter.Status;
-import winterwell.jtwitter.Twitter;
 import winterwell.jtwitter.TwitterException;
 
 public class UpdaterService extends Service {
 
     static final String TAG = "UpdaterService";
-    private static final long DELAY = 30;
+    private static final long DEFAULT_DELAY = 30;
+    private static final String DELAY_SETTING_NAME = "refreshRate";
     private boolean running = false;
 
     @Override
@@ -27,8 +29,9 @@ public class UpdaterService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        final Twitter twitter = ((YambaApp) getApplication()).twitter;
-        if (twitter == null) {
+        final YambaApp app = ((YambaApp) getApplication());
+
+        if (app.twitter == null) {
             Log.e(TAG, "Cannot start Updater service No API created");
             Toast.makeText(this, "Cannot start updater service", Toast.LENGTH_LONG).show();
             return super.onStartCommand(intent, flags, startId);
@@ -38,12 +41,16 @@ public class UpdaterService extends Service {
                 public void run() {
                     running = true;
                     while (running) {
-                        List<Status> timeline = twitter.getHomeTimeline();
+                        List<Status> timeline = app.twitter.getHomeTimeline();
                         try {
                             for (Status status : timeline) {
                                 Log.d(TAG, String.format("%s: %s", status.user.name, status.text));
                             }
-                            Thread.sleep(DELAY * 1000);
+                            long delay = Integer.parseInt(
+                                    app.prefs.getString(APIType.TWITTER.getPrefix() + DELAY_SETTING_NAME,
+                                            "" + DEFAULT_DELAY));
+                            Log.d(TAG, String.format("Waiting for %d seconds ...", delay));
+                            Thread.sleep(delay * 1000);
                         } catch (InterruptedException e) {
                             Log.e(TAG, "Network error while retriveing timeline:", e);
                             running = false;
@@ -52,7 +59,7 @@ public class UpdaterService extends Service {
                 }
             }.start();
         } catch (TwitterException e) {
-            Log.e(TAG, "Cannot retrieve user timeline:" + twitter.getSelf().getName(), e);
+            Log.e(TAG, "Cannot retrieve user timeline:" + app.twitter.getSelf().getName(), e);
         }
         Log.d(TAG, ".onStartCommand");
         return super.onStartCommand(intent, flags, startId);

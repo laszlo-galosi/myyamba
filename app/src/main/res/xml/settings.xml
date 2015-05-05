@@ -8,15 +8,17 @@
             android:title="@string/titleUsername"
             android:summary="@string/summaryUsername"
             android:key="twitter_username"></EditTextPreference>
-        <!--  <EditTextPreference
-              android:title="@string/titlePassword"
-              android:password="true"
-              android:summary="@string/summaryPassword"
-              android:key="password"></EditTextPreference>-->
         <EditTextPreference
             android:title="@string/titleApiRoot"
             android:summary="@string/summaryApiRoot"
             android:key="twitter_apiRoot"
             android:defaultValue=""></EditTextPreference>
+        <ListPreference
+            android:title="@string/titleRefreshRate"
+            android:password="true"
+            android:summary="@string/summaryRefreshRate"
+            android:key="twitter_refreshRate"
+            android:entries="@array/listentries"
+            android:entryValues="@array/listvalues"></ListPreference>
     </PreferenceScreen>
 </PreferenceScreen>

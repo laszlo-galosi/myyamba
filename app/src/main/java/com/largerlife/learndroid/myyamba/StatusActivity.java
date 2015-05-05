@@ -1,9 +1,11 @@
 package com.largerlife.learndroid.myyamba;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -28,7 +30,7 @@ import winterwell.jtwitter.Twitter;
 import winterwell.jtwitter.TwitterException;
 
 
-public class StatusActivity extends ActionBarActivity implements PreferenceChangeListener {
+public class StatusActivity extends ActionBarActivity {
 
     static final String TAG = "StatusActivity";
     private EditText etStatus;
@@ -42,6 +44,9 @@ public class StatusActivity extends ActionBarActivity implements PreferenceChang
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_status);
         ActionBar actionBar = getSupportActionBar();
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            actionBar.setHomeButtonEnabled(true);
+        }
         actionBar.setIcon(R.drawable.yamba);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
 
@@ -116,7 +121,7 @@ public class StatusActivity extends ActionBarActivity implements PreferenceChang
             Log.d(TAG, "callback: " + uri.getPath());
             final String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
             Log.d(TAG, "verifier: " + verifier);
-            new RetrieveAccessTokenTask(apiType, this, ((YambaApp) getApplication()).prefs) {
+            new RetrieveAccessTokenTask(apiType, this, app.prefs) {
                 @Override
                 protected void onPostExecute(String result) {
                     super.onPostExecute(result);
@@ -140,7 +145,7 @@ public class StatusActivity extends ActionBarActivity implements PreferenceChang
     }
 
     public void onClickTweet(View v) {
-        Twitter twitter = ((YambaApp) getApplication()).twitter;
+        Twitter twitter = app.twitter;
         if (twitter == null) {
             Toast.makeText(this, "Authenticate first", Toast.LENGTH_LONG).show();
             return;
@@ -151,7 +156,7 @@ public class StatusActivity extends ActionBarActivity implements PreferenceChang
     }
 
     public void onClickGetStatus(View view) {
-        Twitter twitter = ((YambaApp) getApplication()).twitter;
+        Twitter twitter = app.twitter;
         if (twitter == null) {
             Toast.makeText(this, "Authenticate first", Toast.LENGTH_LONG).show();
             return;
@@ -170,25 +175,11 @@ public class StatusActivity extends ActionBarActivity implements PreferenceChang
         menuProfile.setIcon(drawable);
     }
 
-    @Override
-    public void preferenceChange(PreferenceChangeEvent pce) {
-        APIType apiType = APIType.getAPITypeByPreferenceKey(pce.getKey());
-        Log.d(TAG, pce.getKey() + " settings changed.");
-        if (apiType == APIType.TWITTER) {
-            if (pce.getKey().equals(apiType.getPrefix() + APIType.API_USERNAME)) {
-                Log.d(TAG, pce.getKey() + " settings changed, need reauthorize API access");
-                Toast.makeText(StatusActivity.this, "Settings changed. Please, authorize Twitter access.", Toast.LENGTH_LONG).show();
-                ((YambaApp) getApplication()).twitter = null;
-                new OAuthAuthorizeTask(apiType, this).execute();
-            }
-        }
-    }
-
     /* Responsible for getting Twitter status */
     class GetStatusTask extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... params) {
-            return ((YambaApp) getApplication()).twitter.getStatus().text;
+            return app.twitter.getStatus().text;
         }
 
         @Override
@@ -203,7 +194,7 @@ public class StatusActivity extends ActionBarActivity implements PreferenceChang
         @Override
         protected String doInBackground(String... params) {
             try {
-                ((YambaApp) getApplication()).twitter.setStatus(params[0]);
+                app.twitter.setStatus(params[0]);
                 return "Successfully posted: " + params[0];
             } catch (TwitterException e) {
                 return "Error connecting to server.";
