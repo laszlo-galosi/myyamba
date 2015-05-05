@@ -51,7 +51,10 @@ public class SettingsFragment extends PreferenceFragment {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object value) {
                     String stringValue = value.toString();
-
+                    //display the original summary if not set
+                    if (stringValue.isEmpty()) {
+                        return true;
+                    }
                     if (preference instanceof ListPreference) {
                         // For list preferences, look up the correct display value in
                         // the preference's 'entries' list.
