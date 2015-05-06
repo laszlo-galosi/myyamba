@@ -1,7 +1,6 @@
 package com.largerlife.learndroid.myyamba;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -21,9 +20,6 @@ import com.largerlife.learndroid.myyamba.apitype.APIType;
 import com.largerlife.learndroid.myyamba.apitype.DownloadProfileImageTask;
 import com.largerlife.learndroid.myyamba.apitype.OAuthAuthorizeTask;
 import com.largerlife.learndroid.myyamba.apitype.RetrieveAccessTokenTask;
-
-import java.util.prefs.PreferenceChangeEvent;
-import java.util.prefs.PreferenceChangeListener;
 
 import oauth.signpost.OAuth;
 import winterwell.jtwitter.Twitter;
@@ -52,8 +48,11 @@ public class StatusActivity extends ActionBarActivity {
 
         app = ((YambaApp) getApplication());
         APIType apiType = APIType.TWITTER;
-        if (app.readAPIAccessTokenFromPrefs(apiType)) {
-            app.createAPI(apiType);
+
+        if (app.getOrCreateAPI(apiType) == null) {
+            Toast.makeText(getApplicationContext(), String.format("Please, authorize %s access.",
+                            apiType.name().toLowerCase()),
+                    Toast.LENGTH_LONG).show();
         }
         etStatus = (EditText) findViewById(R.id.et_status);
     }

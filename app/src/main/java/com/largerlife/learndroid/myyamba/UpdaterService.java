@@ -30,8 +30,7 @@ public class UpdaterService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         final YambaApp app = ((YambaApp) getApplication());
-
-        if (app.twitter == null) {
+        if (app.getOrCreateAPI(APIType.TWITTER) == null) {
             Log.e(TAG, "Cannot start Updater service No API created");
             Toast.makeText(this, "Cannot start updater service", Toast.LENGTH_LONG).show();
             return super.onStartCommand(intent, flags, startId);

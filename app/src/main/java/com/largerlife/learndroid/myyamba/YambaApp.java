@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.largerlife.learndroid.myyamba.apitype.APIType;
 
@@ -37,7 +36,7 @@ public class YambaApp extends Application {
             String userName = apiType.getUserName(prefs);
             String token = apiType.getAccessToken(prefs);
             String tokenSecret = apiType.getAccessTokenSecret(prefs);
-            Log.d(TAG, String.format("Creating %s API with %s %s and %s %s.",
+            Log.d(TAG, String.format("Creating %s API with %s %s and     %s %s.",
                     apiType.name().toLowerCase(),
                     APIType.API_USERNAME, userName,
                     APIType.API_TOKEN, token));
@@ -61,8 +60,8 @@ public class YambaApp extends Application {
 
     public Object getOrCreateAPI(APIType apiType) {
         if (apiType == APIType.TWITTER) {
-            if (twitter == null) {
-
+            if (twitter == null && readAPIAccessTokenFromPrefs(apiType)) {
+                createAPI(apiType);
             }
             Log.d(TAG, "Get API " + apiType.name());
             return twitter;
@@ -84,9 +83,6 @@ public class YambaApp extends Application {
             Log.d(TAG, apiType.name() + " token found.");
             return prefs.contains(apiType.getPrefix() + "username");
         }
-        Toast.makeText(getApplicationContext(), String.format("Please, authorize %s access.",
-                        apiType.name().toLowerCase()),
-                Toast.LENGTH_LONG).show();
         Log.d(TAG, apiType.name() + " token not found.");
         return false;
     }
