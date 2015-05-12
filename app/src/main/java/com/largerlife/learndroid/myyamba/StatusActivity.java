@@ -43,7 +43,7 @@ public class StatusActivity extends ActionBarActivity {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             actionBar.setHomeButtonEnabled(true);
         }
-        actionBar.setIcon(R.drawable.yamba);
+        actionBar.setIcon(R.mipmap.ic_launcher);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
 
         app = ((YambaApp) getApplication());
