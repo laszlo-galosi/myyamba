@@ -5,7 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="update_et_hint">What\'s on your mind?</string>
     <string name="update_btn_post">Update</string>
-    <string name="authorize_twitter">Authenticate</string>
+    <string name="login">Login</string>
     <string name="get_status">Get Status</string>
     <string name="start_service">Start Service</string>
     <string name="stop_service">Stop Service</string>
@@ -24,4 +24,8 @@
     <string name="everyFiveMinute">Every five minute</string>
     <string name="halfAnHour">Half an hour</string>
     <string name="everyHour">Every hour</string>
+    <string name="title_activity_timeline">Timeline</string>
+    <string name="login_twitter">Twitter Login</string>
+    <string name="btn_ok">Ok</string>
+    <string name="logged_in_as">Connected to</string>
 </resources>

@@ -1,19 +1,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.largerlife.learndroid.myyamba.StatusActivity">
+    <!--    <item
+            android:id="@+id/menu_profile"
+            android:icon="@drawable/ic_person_white_48dp"
+            android:title="@string/get_status"
+            android:orderInCategory="100"
+            app:showAsAction="ifRoom" />-->
     <item
         android:id="@+id/menu_authorize"
-        android:icon="@drawable/twitt_auth2"
+        android:icon="@drawable/ic_link_variant_white_48dp"
         android:orderInCategory="200"
-        android:title="@string/authorize_twitter"
-        app:showAsAction="always" />
-    <item
-        android:id="@+id/menu_profile"
-        android:icon="@drawable/last_post"
-        android:orderInCategory="100"
-        android:title="@string/get_status"
-        app:showAsAction="always" />
+        android:title="@string/login" />
     <item
         android:id="@+id/menu_start_service"
         android:orderInCategory="300"

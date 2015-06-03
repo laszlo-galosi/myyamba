@@ -20,10 +20,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:22.0.0'
-    compile files('src/main/libs/jtwitter.jar')
-    compile files('src/main/libs/signpost-commonshttp4.jar')
-    compile files('src/main/libs/signpost-core.jar')
-    compile files('src/main/libs/commons-codec.jar')
+    compile fileTree(dir: 'src/main/libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'com.android.support:design:22.2.0'
 }

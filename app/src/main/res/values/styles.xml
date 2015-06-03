@@ -1,25 +1,48 @@
 <resources>
 
     <!-- Application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <!-- Main theme colors -->
+        <!--   your app branding color for the app bar -->
+        <item name="android:colorPrimary">@color/primary</item>
+        <!--   darker variant for the status bar and contextual app bars -->
+        <item name="android:colorPrimaryDark">@color/primary_dark</item>
+        <!--   theme UI controls like checkboxes and text fields -->
+        <item name="android:colorAccent">@color/accent</item>
+        <item name="android:statusBarColor">@color/primary_dark</item>
+        <!-- Custom shadow overlay for toolbar shadow from Google I/O app -->
+        <item name="android:windowContentOverlay">@drawable/bottom_shadow</item>
+    </style>
+
+    <style name="MyViewArea">
+        <item name="android:foreground">?android:windowContentOverlay</item>
+    </style>
+
+    <style name="MyToolbar">
+        <item name="android:background">?attr/colorPrimary</item>
+    </style>
+
+    <style name="MyFab">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">8dp</item>
     </style>
 
     <style name="tv_caption">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
-        <item name="android:layout_alignParentTop">true</item>
-        <item name="android:layout_alignParentLeft">true</item>
-        <item name="android:padding">@dimen/abc_control_padding_material</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/tv_caption</item>
+        <item name="android:layout_marginTop">@dimen/abc_button_padding_vertical_material</item>
+        <item name="android:layout_marginBottom">@dimen/abc_button_padding_vertical_material</item>
+        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
+        <item name="android:layout_gravity">start|top</item>
+        <!--<item name="android:textColor">@color/action_text</item>-->
     </style>
 
     <style name="edittext">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:padding">@dimen/abc_control_padding_material</item>
         <item name="android:layout_alignParentLeft">true</item>
         <item name="android:gravity">top</item>
         <item name="android:background">@color/bg_et</item>
@@ -29,9 +52,10 @@
     <style name="btn_app">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/abc_button_padding_vertical_material</item>
-        <item name="android:layout_marginBottom">@dimen/abc_button_padding_vertical_material</item>
-        <item name="android:layout_alignParentLeft">true</item>
-        <item name="android:background">@color/bg_btn</item>
+        <!--        <item name="android:layout_marginTop">@dimen/abc_button_padding_vertical_material</item>
+                <item name="android:layout_marginBottom">@dimen/abc_button_padding_vertical_material</item>-->
+        <!--        <item name="android:paddingLeft">@dimen/abc_button_padding_horizontal_material</item>
+                <item name="android:paddingRight">@dimen/abc_button_padding_horizontal_material</item>-->
+        <item name="android:background">@color/accent</item>
     </style>
 </resources>

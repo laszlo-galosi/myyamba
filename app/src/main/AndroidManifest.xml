@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".StatusActivity"
-            android:icon="@drawable/yamba"
+            android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:launchMode="singleInstance">
             <intent-filter>
@@ -36,7 +36,7 @@
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_prefs"></activity>
+            android:label="@string/title_activity_prefs" />
 
         <service android:name=".UpdaterService" />
         <service android:name=".RefreshService" />
@@ -46,5 +46,15 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name=".TimelineActivity"
+            android:label="@string/title_activity_timeline"
+            android:parentActivityName=".StatusActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.largerlife.learndroid.myyamba.StatusActivity" />
+        </activity>
     </application>
+
 </manifest>

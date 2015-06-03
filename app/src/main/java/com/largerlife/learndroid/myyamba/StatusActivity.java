@@ -1,13 +1,16 @@
 package com.largerlife.learndroid.myyamba;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,12 +29,15 @@ import winterwell.jtwitter.Twitter;
 import winterwell.jtwitter.TwitterException;
 
 
-public class StatusActivity extends ActionBarActivity {
+public class StatusActivity extends AppCompatActivity {
 
     static final String TAG = "StatusActivity";
     private EditText etStatus;
     private MenuItem menuProfile;
     private YambaApp app;
+    private CoordinatorLayout mCoordinatorLayout;
+    private FloatingActionButton mActionFab;
+    private FloatingActionButton mProfileFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,22 +45,59 @@ public class StatusActivity extends ActionBarActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_status);
-        ActionBar actionBar = getSupportActionBar();
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            actionBar.setHomeButtonEnabled(true);
-        }
-        actionBar.setIcon(R.mipmap.ic_launcher);
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // Handle the menu item
+                return onOptionsItemSelected(item);
+            }
+        });
+
+        // Inflate a menu to be displayed in the toolbar
+        toolbar.inflateMenu(R.menu.menu_main);
+        //toolbar.setLogo(R.mipmap.ic_launcher);
+
+        mActionFab = (FloatingActionButton) findViewById(R.id.actionFab);
+        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.mainLayout);
+
+        mActionFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickUpdate(v);
+            }
+        });
+
+        mProfileFab = (FloatingActionButton) findViewById(R.id.profileFab);
+
+        final Context selfContext = this;
+        mProfileFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(selfContext, TimelineActivity.class));
+            }
+        });
+
 
         app = ((YambaApp) getApplication());
         APIType apiType = APIType.TWITTER;
 
         if (app.getOrCreateAPI(apiType) == null) {
-            Toast.makeText(getApplicationContext(), String.format("Please, authorize %s access.",
-                            apiType.name().toLowerCase()),
-                    Toast.LENGTH_LONG).show();
+            makeConnectSnackBar();
         }
-        etStatus = (EditText) findViewById(R.id.et_status);
+//        etStatus = (EditText) findViewById(R.id.et_status);
+    }
+
+    private void makeConnectSnackBar() {
+        Snackbar.make(mCoordinatorLayout,
+                getString(R.string.login_twitter), Snackbar.LENGTH_LONG)
+                .setAction(getString(R.string.login), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onClickAuthorize(v);
+                    }
+                }).show();
     }
 
 
@@ -64,7 +107,7 @@ public class StatusActivity extends ActionBarActivity {
         Log.d(TAG, "Menu Inflate.");
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
-        menuProfile = menu.findItem(R.id.menu_profile);
+//        menuProfile = menu.findItem(R.id.menu_profile);
         new DownloadProfileImageTask(APIType.TWITTER, app) {
             @Override
             protected void onPostExecute(Drawable result) {
@@ -85,9 +128,10 @@ public class StatusActivity extends ActionBarActivity {
             case R.id.menu_authorize:
                 onClickAuthorize(getCurrentFocus());
                 break;
-            case R.id.menu_profile:
+/*            case R.id.menu_profile:
                 onClickGetStatus(getCurrentFocus());
-                break;
+                startActivity(new Intent(this, TimelineActivity.class));
+                break;*/
             case R.id.menu_start_service:
                 startService(intentUpdater);
                 break;
@@ -143,10 +187,10 @@ public class StatusActivity extends ActionBarActivity {
         new OAuthAuthorizeTask(APIType.TWITTER, this).execute();
     }
 
-    public void onClickTweet(View v) {
+    public void onClickUpdate(View v) {
         Twitter twitter = app.twitter;
         if (twitter == null) {
-            Toast.makeText(this, "Authenticate first", Toast.LENGTH_LONG).show();
+            makeConnectSnackBar();
             return;
         }
         EditText status = (EditText) findViewById(R.id.et_status);
@@ -157,7 +201,7 @@ public class StatusActivity extends ActionBarActivity {
     public void onClickGetStatus(View view) {
         Twitter twitter = app.twitter;
         if (twitter == null) {
-            Toast.makeText(this, "Authenticate first", Toast.LENGTH_LONG).show();
+            makeConnectSnackBar();
             return;
         }
         new GetStatusTask().execute();
@@ -166,12 +210,25 @@ public class StatusActivity extends ActionBarActivity {
     private void setProfileImage(Drawable drawable) {
         Log.d(TAG, "setProfileImage:" + drawable);
         if (drawable == null) {
-            Toast.makeText(StatusActivity.this, "Please, authorize Twitter access.", Toast.LENGTH_LONG).show();
-            drawable = getResources().getDrawable(R.drawable.default_profile);
+            makeConnectSnackBar();
+            drawable = getResources().getDrawable(R.drawable.ic_person_white_48dp);
         } else {
-            Toast.makeText(StatusActivity.this, "Logged in as " + app.twitter.getSelf().getScreenName(), Toast.LENGTH_LONG).show();
+//            Toast.makeText(StatusActivity.this, "Logged in as " + app.twitter.getSelf().getScreenName(), Toast.LENGTH_LONG).show();
+            Snackbar.make(mCoordinatorLayout,
+                    getString(R.string.logged_in_as)
+                            + " " + APIType.TWITTER.name()
+                            + " " + app.twitter.getSelf().getScreenName()
+                    , Snackbar.LENGTH_LONG)
+                    .setAction(getString(R.string.btn_ok), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onClickAuthorize(v);
+                        }
+                    }).show();
         }
-        menuProfile.setIcon(drawable);
+//        menuProfile.setIcon(drawable);
+        mProfileFab.setImageDrawable(drawable);
+        mActionFab.setImageDrawable(getResources().getDrawable(R.drawable.ic_create_white_48dp));
     }
 
     /* Responsible for getting Twitter status */

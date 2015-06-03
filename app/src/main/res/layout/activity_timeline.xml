@@ -1,0 +1,49 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TimelineActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            style="@style/MyToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/primary"
+            android:minHeight="?attr/actionBarSize"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/fragment_timeline"
+            android:name="com.largerlife.learndroid.myyamba.TimelineFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/toolbar"
+            tools:context="com.largerlife.learndroid.myyamba.TimelineFragment"
+            tools:layout="@android:layout/list_content" />
+    </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/actionFab"
+        style="@style/MyFab"
+        app:borderWidth="0dp"
+        android:layout_gravity="end|bottom"
+        android:background="@color/accent"
+        android:src="@drawable/ic_create_white_48dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/profileFab"
+        style="@style/MyFab"
+        app:borderWidth="0dp"
+        android:layout_gravity="center|top"
+        android:background="@color/secondary"
+        android:src="@drawable/ic_refresh_white_48dp" />
+
+</android.support.design.widget.CoordinatorLayout>
