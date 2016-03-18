@@ -29,8 +29,8 @@
       >
         <ImageView
             android:id="@+id/profileImage"
-            android:layout_width="@dimen/fab_size_mini"
-            android:layout_height="@dimen/fab_size_mini"
+            android:layout_width="@dimen/design_fab_size_mini"
+            android:layout_height="@dimen/design_fab_size_mini"
             android:layout_marginLeft="?android:listPreferredItemPaddingLeft"
             android:layout_gravity="center|center_vertical"
             android:src="@drawable/ic_person_white_48dp"
@@ -73,10 +73,10 @@
     </RelativeLayout>
 
   <android.support.design.widget.FloatingActionButton
-      xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
       android:id="@+id/actionFab"
       style="@style/MyFab"
+      android:layout_width="@dimen/design_fab_size_normal"
+      android:layout_height="@dimen/design_fab_size_normal"
       android:layout_gravity="end|bottom"
       android:src="@drawable/ic_refresh_white_48dp"
       android:layout_marginBottom="@dimen/fab_margin"

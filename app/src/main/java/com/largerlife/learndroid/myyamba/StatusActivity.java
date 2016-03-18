@@ -1,5 +1,6 @@
 package com.largerlife.learndroid.myyamba;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -13,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import com.largerlife.learndroid.myyamba.apitype.APIType;
@@ -75,6 +77,11 @@ public class StatusActivity extends BaseActivity {
         }
     }
 
+    @Override protected void onPause() {
+        super.onPause();
+        closeSoftKeyboard();
+    }
+
     @Override public void onProfileImageDownloaded(final Drawable drawable) {
         Log.d(TAG, "setProfileImage:" + drawable);
         if (drawable == null) {
@@ -100,6 +107,7 @@ public class StatusActivity extends BaseActivity {
     }
 
     public void onSendClicked(View v) {
+        closeSoftKeyboard();
         Twitter twitter = mApplication.twitter;
         if (twitter == null) {
             makeConnectSnackbar();
@@ -205,5 +213,18 @@ public class StatusActivity extends BaseActivity {
             super.onPostExecute(result);
             makeConfirmSnackBar(result);
         }
+    }
+
+    public void closeSoftKeyboard() {
+        InputMethodManager imm =
+              (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token
+        // from it
+        if (view == null) {
+            view = new View(this);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }
