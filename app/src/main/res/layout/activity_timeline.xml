@@ -1,4 +1,5 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainLayout"
@@ -10,40 +11,80 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            style="@style/MyToolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/primary"
-            android:minHeight="?attr/actionBarSize"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+      <android.support.v7.widget.Toolbar
+          android:id="@+id/toolbar"
+          style="@style/MyToolbar"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@color/primary"
+          android:minHeight="?attr/actionBarSize"
+          app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+      <LinearLayout
+          android:id="@+id/header"
+          android:layout_width="match_parent"
+          android:layout_height="?android:listPreferredItemHeight"
+          android:layout_below="@+id/toolbar"
+          android:orientation="horizontal"
+          android:background="@color/secondary_base"
+      >
+        <ImageView
+            android:id="@+id/profileImage"
+            android:layout_width="@dimen/fab_size_mini"
+            android:layout_height="@dimen/fab_size_mini"
+            android:layout_marginLeft="?android:listPreferredItemPaddingLeft"
+            android:layout_gravity="center|center_vertical"
+            android:src="@drawable/ic_person_white_48dp"
+            android:padding="0dp"
+            android:scaleType="fitXY"
+        />
+        <ImageView
+            android:id="@+id/apiIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="4dp"
+            android:layout_gravity="center|center_vertical"
+            android:src="@drawable/ic_twitter_white_48dp"
+            android:padding="0dp"
+            android:scaleType="fitXY"
+        />
 
-        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/fragment_timeline"
-            android:name="com.largerlife.learndroid.myyamba.TimelineFragment"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/profileName"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_below="@id/toolbar"
-            tools:context="com.largerlife.learndroid.myyamba.TimelineFragment"
-            tools:layout="@android:layout/list_content" />
+            android:gravity="left|center_vertical"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:textColor="@color/secondary_text_default_material_light"
+            android:text="@string/connect_account"/>
+      </LinearLayout>
+
+      <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          android:id="@+id/fragment_timeline"
+          android:name="com.largerlife.learndroid.myyamba.TimelineFragment"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_marginTop="8dp"
+          android:layout_marginBottom="16dp"
+          android:layout_below="@id/header"
+          tools:context="com.largerlife.learndroid.myyamba.TimelineFragment"
+          tools:layout="@android:layout/list_content"/>
     </RelativeLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/actionFab"
-        style="@style/MyFab"
-        app:borderWidth="0dp"
-        android:layout_gravity="end|bottom"
-        android:background="@color/accent"
-        android:src="@drawable/ic_create_white_48dp" />
+  <android.support.design.widget.FloatingActionButton
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      android:id="@+id/actionFab"
+      style="@style/MyFab"
+      android:layout_gravity="end|bottom"
+      android:src="@drawable/ic_refresh_white_48dp"
+      android:layout_marginBottom="@dimen/fab_margin"
+      android:layout_marginRight="@dimen/fab_margin"
+      app:background="@color/accent"
+      app:rippleColor="@color/accent_dark"
+      app:borderWidth="0dp"
+      app:pressedTranslationZ="12dp"/>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/profileFab"
-        style="@style/MyFab"
-        app:borderWidth="0dp"
-        android:layout_gravity="center|top"
-        android:background="@color/secondary"
-        android:src="@drawable/ic_refresh_white_48dp" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceScreen
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
         android:key="twitter_setting_key"
         android:title="@string/twitter_settings"
         android:persistent="false">
@@ -21,4 +20,3 @@
             android:entries="@array/listentries"
             android:entryValues="@array/listvalues"></ListPreference>
     </PreferenceScreen>
-</PreferenceScreen>

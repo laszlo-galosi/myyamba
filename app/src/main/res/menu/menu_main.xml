@@ -6,7 +6,7 @@
             android:icon="@drawable/ic_person_white_48dp"
             android:title="@string/get_status"
             android:orderInCategory="100"
-            app:showAsAction="ifRoom" />-->
+            mApplication:showAsAction="ifRoom" />-->
     <item
         android:id="@+id/menu_authorize"
         android:icon="@drawable/ic_link_variant_white_48dp"

@@ -4,7 +4,7 @@ package com.largerlife.learndroid.myyamba.apitype;
  * Create Twitter API key at https://dev.twitter.com/apps
  * Created by LargerLife on 26/04/15.
  */
-public class TwitterAPIInfo implements IAPITypeInfo {
+public class TwitterApiInfo implements IApiTypeInfo {
 
     private static final String AUTH_KEY = "iYQ6Wv46bTlBgrofZ8HLli4LI";
     private static final String AUTH_SECRET = "OwuKvmoUThpBrkI3BKkZuD13jZND7yuJM1vqtH9BziQK4w3YHf";

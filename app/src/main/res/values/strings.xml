@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyYamba</string>
+    <string name="app_name">My Yamba</string>
     <string name="title_activity_status">Update Status</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -28,4 +28,9 @@
     <string name="login_twitter">Twitter Login</string>
     <string name="btn_ok">Ok</string>
     <string name="logged_in_as">Connected to</string>
+    <string name="connect_account">Connect your account</string>
+    <string name="snackbar_action_ok">Ok</string>
+    <string name="settings_changed">Settings changed. Please, authorize Twitter access.</string>
+    <string name="posted_at">posted on</string>
+    <string name="say_something">First, type something!</string>
 </resources>

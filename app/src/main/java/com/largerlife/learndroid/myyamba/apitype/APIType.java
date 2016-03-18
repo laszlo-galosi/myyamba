@@ -1,7 +1,6 @@
 package com.largerlife.learndroid.myyamba.apitype;
 
 import android.content.SharedPreferences;
-
 import oauth.signpost.OAuthProvider;
 import oauth.signpost.basic.DefaultOAuthProvider;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
@@ -10,7 +9,7 @@ import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
  * Created by LargerLife on 26/04/15.
  */
 public enum APIType {
-    TWITTER("twitter_", new TwitterAPIInfo());
+    TWITTER("twitter_", new TwitterApiInfo());
 
     public static final String API_TOKEN = "token";
 
@@ -19,7 +18,7 @@ public enum APIType {
     public static final String API_ROOT_URL = "apiRoot";
     private final String prefix;
 
-    private final IAPITypeInfo apiTypeInfo;
+    private final IApiTypeInfo apiTypeInfo;
 
     private CommonsHttpOAuthConsumer mConsumer;
 
@@ -29,7 +28,7 @@ public enum APIType {
 
     private OAuthProvider mProvider;
 
-    APIType(String prefix, IAPITypeInfo apiTypeInfo) {
+    APIType(String prefix, IApiTypeInfo apiTypeInfo) {
         this.prefix = prefix;
         this.apiTypeInfo = apiTypeInfo;
         this.mConsumer = new CommonsHttpOAuthConsumer(
@@ -45,7 +44,7 @@ public enum APIType {
         return prefix;
     }
 
-    public IAPITypeInfo getInfo() {
+    public IApiTypeInfo getInfo() {
         return apiTypeInfo;
     }
 

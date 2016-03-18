@@ -1,11 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="?android:attr/listPreferredItemHeight"
-    android:gravity="center_vertical"
-    android:id="@+id/tv_list_item_timeline"
-    tools:text="This is an update message">
-
-</TextView>
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+>
+  <TextView
+      android:id="@+id/itemTitle"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingLeft="?android:listPreferredItemPaddingLeft"
+      android:paddingRight="?android:listPreferredItemPaddingRight"
+      android:paddingTop="8dp"
+      android:paddingBottom="8dp"
+      android:textAppearance="@android:style/TextAppearance.DeviceDefault.Widget.TextView"
+      android:textColor="@color/text_secondary"
+      android:gravity="left|center_vertical"
+      tools:text="user"/>
+  <TextView
+      android:id="@+id/itemText"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingLeft="?android:listPreferredItemPaddingLeft"
+      android:paddingRight="?android:listPreferredItemPaddingRight"
+      android:paddingBottom="16dp"
+      android:minHeight="?android:attr/listPreferredItemHeight"
+      android:textAppearance="@android:style/TextAppearance.DeviceDefault.Widget.TextView.PopupMenu"
+      android:textColor="@color/text_primary"
+      android:gravity="left|top"
+      tools:text="This is an update message"/>
+</LinearLayout>

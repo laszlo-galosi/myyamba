@@ -3,7 +3,7 @@ package com.largerlife.learndroid.myyamba.apitype;
 /**
  * Created by LargerLife on 26/04/15.
  */
-public interface IAPITypeInfo {
+public interface IApiTypeInfo {
 
     public APIType getAPIType();
 

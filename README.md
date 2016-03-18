@@ -1,2 +1,3 @@
-# My Yamba App
-Learning Android Yamba Android Studio project based on https://github.com/mgargenta/LearningAndroidYamba 
+ My Yamba App
+=============
+A simple demo app using Twitter API via OAuth, and posting some tweet to the connected account.

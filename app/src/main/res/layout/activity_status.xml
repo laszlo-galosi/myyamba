@@ -1,4 +1,5 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainLayout"
@@ -6,60 +7,92 @@
     android:layout_height="match_parent"
     tools:context=".StatusActivity">
 
-    <RelativeLayout
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+  >
+    <!--    android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"-->
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        style="@style/MyToolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <!--    android:paddingBottom="@dimen/activity_vertical_margin"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/activity_vertical_margin"-->
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        android:minHeight="?attr/actionBarSize"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            style="@style/MyToolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/primary"
-            android:minHeight="?attr/actionBarSize"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:orientation="horizontal"
+    >
+      <!--    <TextView
+              android:id="@+id/tv_status_title"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+
+              android:text="@string/title_activity_status" />-->
+      <!--      <android.support.design.widget.FloatingActionButton
+                android:id="@+id/profileFab"
+                style="@style/MyFab"
+                android:layout_width="@dimen/fab_size_mini"
+                android:layout_height="@dimen/fab_size_mini"
+                android:layout_gravity="center|top"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_person_white_48dp"
+                mApplication:backgroundTint="@color/secondary"
+                mApplication:backgroundTintMode="src_atop"
+                mApplication:rippleColor="@color/primary"
+                mApplication:borderWidth="0dp"
+                mApplication:pressedTranslationZ="12dp"
+            />-->
+      <ImageButton
+          android:id="@+id/profileFab"
+          android:layout_width="@dimen/fab_size_mini"
+          android:layout_height="@dimen/fab_size_mini"
+          android:layout_marginLeft="?android:listPreferredItemPaddingLeft"
+          android:layout_marginTop="16dp"
+          android:gravity="center|center_vertical"
+          android:src="@drawable/ic_person_white_48dp"
+          android:padding="0dp"
+          android:scaleType="fitXY"
+      />
+
+      <EditText
+          android:id="@+id/et_status"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="8dp"
+          android:layout_marginRight="?android:listPreferredItemPaddingRight"
+          android:layout_marginTop="16dp"
+          android:layout_below="@+id/toolbar"
+          android:textAppearance="@android:style/TextAppearance.DeviceDefault.Widget.EditText"
+          android:textSize="@dimen/abc_text_size_menu_material"
+          android:enabled="true"
+          android:hint="@string/update_et_hint"
+          android:inputType="textMultiLine"/>
+    </LinearLayout>
+  </RelativeLayout>
 
 
-        <!--        <Button
-                    android:id="@+id/btn_status_post"
-                    style="@style/btn_app"
-                    android:layout_below="@+id/toolbar"
-                    android:onClick="onClickUpdate"
-                    android:text="@string/update_btn_post" />-->
-        <TextView
-            android:id="@+id/tv_status_title"
-            style="@style/tv_caption"
-            android:layout_below="@+id/toolbar"
-            android:text="@string/title_activity_status" />
-
-        <EditText
-            android:id="@+id/et_status"
-            style="@style/edittext"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/tv_status_title"
-            android:enabled="true"
-            android:hint="@string/update_et_hint"
-            android:inputType="textMultiLine" />
-    </RelativeLayout>
-
-    <android.support.design.widget.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/actionFab"
-        style="@style/MyFab"
-        app:borderWidth="0dp"
-        android:background="@color/accent"
-        android:layout_gravity="end|bottom"
-        android:src="@drawable/ic_link_variant_white_48dp" />
-
-    <android.support.design.widget.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/profileFab"
-        style="@style/MyFab"
-        app:borderWidth="0dp"
-        android:layout_gravity="center_horizontal|top"
-        android:background="@color/secondary"
-        android:src="@drawable/ic_person_white_48dp" />
+  <android.support.design.widget.FloatingActionButton
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      android:id="@+id/actionFab"
+      style="@style/MyFab"
+      android:layout_gravity="end|bottom"
+      android:src="@drawable/ic_add_white_24dp"
+      android:layout_marginBottom="@dimen/fab_margin"
+      android:layout_marginRight="@dimen/fab_margin"
+      app:background="@color/accent"
+      app:rippleColor="@color/accent_dark"
+      app:borderWidth="0dp"
+      app:pressedTranslationZ="12dp"
+  />
 </android.support.design.widget.CoordinatorLayout>

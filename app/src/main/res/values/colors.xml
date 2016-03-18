@@ -8,4 +8,8 @@
     <color name="primary_dark">#0097A7</color>
     <color name="accent">#283593</color>
     <color name="secondary">#B2EBF2</color>
+    <color name="accent_dark">#1A237E</color>
+    <color name="secondary_base">#e0e0e0</color>
+    <color name="text_primary">#3f474c</color>
+    <color name="text_secondary">#a1b5b2</color>
 </resources>
